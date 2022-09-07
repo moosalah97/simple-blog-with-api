@@ -45,8 +45,10 @@
                             </button>
                         </div>
                     @endif
+                        @auth
+                        <a href="{{route('posts.create')}}" class="btn btn-success" role="button" aria-disabled="true">Add Post</a><br><br>
+                        @endauth
 
-                    <a href="{{route('posts.create')}}" class="btn btn-success" role="button" aria-disabled="true">Add Post</a><br><br>
                     <table id="example1" class="table table-bordered table-striped">
                         <thead>
                         <tr>
@@ -58,25 +60,29 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($posts as $post)
+                        @forelse($posts as $post)
                             <tr>
                                 <td>{{$loop->iteration}}</td>
                                 <td>{{$post->title}}</td>
                                 <td>{{$post->body}}</td>
                                 <td>{{$post->created_at}}</td>
-                                <td>
-                                    <a href="{{route('posts.edit',$post->id)}}" class="btn btn-primary btn-sm " role="button" aria-disabled="true">Edit</a>
-                                    <form action="{{route('posts.destroy', ['id' => $post->id])}}" method="POST">
+                                @auth
+                                    <td>
+                                        <a href="{{route('posts.edit',$post->id)}}" class="btn btn-primary btn-sm " role="button" aria-disabled="true">Edit</a>
+                                        <form action="{{route('posts.destroy', ['id' => $post->id])}}" method="POST">
 
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm " role="button" aria-disabled="true"> Delete</button>
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm " role="button" aria-disabled="true"> Delete</button>
 
-                                    </form>
-                                </td>
+                                        </form>
+                                    </td>
+                                @endauth
                             </tr>
                         @include('posts.destroy')
-                        @endforeach
+                        @empty
+                            <td>no posts</td>
+                        @endforelse
                     </table>
                 </div>
             </div>
